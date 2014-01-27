@@ -32,7 +32,8 @@
         <% pages.each_with_index do |p, i| %>
           <% next if p['deleted'] %>
           <div class="row">
-          <img data-page="<%= i+1 %>" class="page-image" id="page-<%= i + 1 %>" src="/pdfs/<%= file_id %>/document_560_<%= i+1 %>.png" data-original-width="<%= p['width'] %>" data-original-height="<%= p['height'] %>" data-rotation="<%= p['rotation'] %>"
+          <% scale = 560 / p['width'] %>
+          <img width="560" height="<%= p['height'] * scale %>" data-page="<%= i+1 %>" class="page-image" id="page-<%= i + 1 %>" data-original-width="<%= p['width'] %>" data-original-height="<%= p['height'] %>" data-rotation="<%= p['rotation'] %>"
             <% if i == 0 %>
               data-position="right" data-intro="Click and drag to select each table in your document. Once you've selected it, a window to preview your data will appear, along with options to download it as a spreadsheet."
             <% end %>
@@ -97,8 +98,9 @@
       </form>
     </div>
 </div>
+<script type="text/javascript" src="/js/pdf.js"></script>
+<script type="text/javascript" src="/js/pdf.worker.js"></script>
 <script type="text/javascript" src="/js/bootstrap-tour.min.js"></script>
-
 <script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript" src="/js/table2CSV.js"></script>
 <script type="text/javascript" src="/js/pdf_view.js?1365633567"></script> <!-- cachebuster: last update time of JS. -->

@@ -167,6 +167,7 @@ Tabula.PDFView = Backbone.View.extend({
                 'toggleClearAllAndRestorePredetectedTablesButtons', 'toggleMultiSelectMode', 'query_all_data', 'redoQuery');
         this.pageCount = $('img.page-image').length;
         this.render();
+        this.renderPDFPages();
         this.updateExtractionMethodButton();
     },
 
@@ -174,6 +175,33 @@ Tabula.PDFView = Backbone.View.extend({
       query_parameters = {};
       this.getTablesJson();
       return this;
+    },
+
+    renderPDFPages: function() {
+      PDFJS.workerSrc = '/js/pdf.worker.js';
+      PDFJS.getDocument('/pdfs/' + this.PDF_ID + '/document.pdf').then(
+        function(pdfDoc) {
+          $('img.page-image').each(function(i, img) {
+            pdfDoc.getPage(parseInt($(img).data('page'))).then(function(page) {
+              var c = document.createElement('canvas');
+              // $('body').get(0).appendChild(c);
+              var context = c.getContext('2d');
+              var viewport = page.getViewport(1);
+              c.height = viewport.height;
+              c.width = viewport.width;
+              page.render({
+                canvasContext: context,
+                viewport: viewport
+              }).promise.then(function(d) {
+                var imageData = c.toDataURL();
+                $(img).attr('src', imageData);
+
+              });
+            });
+          });
+        }
+      );
+
     },
 
     toggleMultiSelectMode: function(){
