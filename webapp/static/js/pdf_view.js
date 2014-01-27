@@ -182,7 +182,7 @@ Tabula.PDFView = Backbone.View.extend({
       PDFJS.getDocument('/pdfs/' + this.PDF_ID + '/document.pdf').then(
         function(pdfDoc) {
           $('img.page-image').each(function(i, img) {
-            pdfDoc.getPage(parseInt($(img).data('page'))).then(function(page) {
+            pdfDoc.getPage(i+1).then(function(page) {
               var c = document.createElement('canvas');
               // $('body').get(0).appendChild(c);
               var context = c.getContext('2d');
@@ -195,7 +195,8 @@ Tabula.PDFView = Backbone.View.extend({
               }).promise.then(function(d) {
                 var imageData = c.toDataURL();
                 $(img).attr('src', imageData);
-
+                $('li#thumb-page-' + (i + 1) + ' img').attr('src', imageData);
+                delete c;
               });
             });
           });
